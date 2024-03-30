@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>House Price Prediction</title>
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='House Picture.jpg') }}");
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin: 0;
+            font-family: 'Arimo', sans-serif;
+        }
+
+        .navbar {
+            overflow: hidden;
+            background-color: #203864;
+            height: 100px;
+        }
+
+        .navbar a {
+            float: left;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 25px;
+        }
+
+        .navbar p {
+            text-align: center;
+            color: white;
+            padding: 14px 0;
+            margin: 0;
+            font-weight: bold;
+            font-size: 45px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .login {
+            margin: 50px auto;
+            width: 500px;
+            padding: 16px;
+            border-radius: 10px;
+            border: 2px solid #ccc;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        h1 {
+            background-color: #203864;
+            color: white;
+            text-align: center;
+            font-family: 'Pacifico', cursive;
+            padding: 20px 0 15px 0;
+            border-radius: 10px 10px 0 0;
+            margin: -16px -50px;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;  /* Adjust the layout to a column */
+            gap: 15px;  /* Add some space between the elements */
+        }
+
+        .row input,
+        .row select {
+            width: 100%;  /* Full width input and select */
+            margin-bottom: 10px;  /* Adjust the margin */
+        }
+
+        button {
+            font-size: 16px;
+            background: linear-gradient(#ffbc00 5%, #ffdd7f 100%);
+            border: 1px solid #e5a900;
+            color: #4E4D4B;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+            padding: 10px 0;
+            outline: none;
+            margin-top: 10px;  /* Adjust the margin */
+        }
+
+        button:hover {
+            background: linear-gradient(#ffdd7f 5%, #ffbc00 100%);
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div class="navbar">
+        <p>House Price Prediction</p>
+    </div>
+
+    <div class="login">
+        <h1>House Price Prediction</h1><br><br>
+
+        <!-- Main Input For Receiving Query to our ML -->
+
+<form action="{{ url_for('predict') }}" method="post">
+    <div class="row">
+        <input type="number" name="bath" placeholder="Bathrooms" required="required" value="{{ bath }}">
+    </div>
+    <div class="row">
+        <input type="number" name="balcony" placeholder="Balcony" required="required" value="{{ balcony }}">
+    </div>
+    <div class="row">
+        <input type="number" name="total_sqft_int" placeholder="Total Square Foot" required="required" inputmode="numeric" value="{{ total_sqft_int }}">
+    </div>
+    <div class="row">
+        <input type="number" name="bhk" placeholder="BHK" required="required" value="{{ bhk }}">
+    </div>
+    <div class="row">
+        <select name="availability" required="required">
+            <option value="" disabled selected>Select Availability</option>
+            {% for option in availability_options %}
+                <option value="{{ option }}" {% if option == availability %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="row">
+        <!-- Dropdown for Location -->
+        <select name="location" required="required">
+            <option value="" disabled selected>Select Location</option>
+            <option value="Kathmandu" {% if location == 'Kathmandu' %}selected{% endif %}>Kathmandu</option>
+            <option value="Bhaktapur" {% if location == 'Bhaktapur' %}selected{% endif %}>Bhaktapur</option>
+            <option value="Lalitpur" {% if location == 'Lalitpur' %}selected{% endif %}>Lalitpur</option>
+        </select>
+    </div>
+
+    <button type="submit" onclick="retainFormValues()">Predict</button>
+</form>
+
+<br>
+<br>
+{{ prediction_text }}
+
+    </div>
+       <script>
+        // Retain form values on button click
+        function retainFormValues() {
+            sessionStorage.setItem("bath", document.getElementById("predictionForm").elements["bath"].value);
+            sessionStorage.setItem("balcony", document.getElementById("predictionForm").elements["balcony"].value);
+            sessionStorage.setItem("total_sqft_int", document.getElementById("predictionForm").elements["total_sqft_int"].value);
+            sessionStorage.setItem("bhk", document.getElementById("predictionForm").elements["bhk"].value);
+            sessionStorage.setItem("availability", document.getElementById("predictionForm").elements["availability"].value);
+            sessionStorage.setItem("location", document.getElementById("predictionForm").elements["location"].value);
+        }
+
+    </script>
+</body>
+
+</html>
